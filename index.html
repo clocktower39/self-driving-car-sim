@@ -5,10 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css" />
-    <title>Self Driving Car</title>
+<title>Self Driving Car</title>
 </head>
 <body>
     <canvas id="carCanvas"></canvas>
+    <div id="verticalButtons">
+        <button onclick="save()">Save</button>
+        <button onclick="discard()">Discard</button>
+    </div>
     <canvas id="networkCanvas"></canvas>
     <script src="network.js"></script>
     <script src="sensor.js"></script>
