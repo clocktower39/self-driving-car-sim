@@ -52,7 +52,7 @@ function generateCars(N) {
     return cars;
 }
 
-function animate() {
+function animate(time) {
     traffic.map(car => car.update(road.borders, []));
     cars.forEach(car => car.update(road.borders, traffic));
 
@@ -78,5 +78,7 @@ function animate() {
 
     carCtx.restore();
 
+    networkCtx.lineDashOffset = -time/50;
+    Visualizer.drawNetwork(networkCtx, bestCar.brain);
     requestAnimationFrame(animate);
 }
