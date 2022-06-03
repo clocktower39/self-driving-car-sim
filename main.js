@@ -9,25 +9,39 @@ const networkCtx = networkCanvas.getContext("2d");
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
 let restartCanvas = false;
+let currentControl = 'AI';
 let N = 1000;
-const cars = generateCars(N);
+let cars = generateCars(N);
 let bestCar = cars[0];
-if (localStorage.getItem("bestBrain")) {
-    for (let i = 0; i < cars.length; i++) {
-        cars[i].brain = JSON.parse(
-            localStorage.getItem("bestBrain"));
-        if (i != 0) {
-            NeuralNetwork.mutate(cars[i].brain, Math.random() / 3);
-        }
-    }
-}
+let selectedTrafficSituation = 0;
+
+checkSavedBrain(cars);
 
 const trafficSituations = [
+    [
+        [road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(1), -400, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(0), -225, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(2), -225, 30, 50, "DUMMY", 2],
+    ],
     [
         [road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2],
         [road.getLaneCenter(0.5), -200, 30, 50, "DUMMY", 2],
         [road.getLaneCenter(1.5), -400, 30, 50, "DUMMY", 2],
         [road.getLaneCenter(0.5), -300, 30, 50, "DUMMY", 2],
+    ],
+    [
+        [road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(1), -400, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(0), -225, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(2), -225, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(0), -575, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(2), -575, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2],
+        
+        [road.getLaneCenter(0.5), -775, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(1.5), -775, 30, 50, "DUMMY", 2],
+        [road.getLaneCenter(1), -900, 30, 50, "DUMMY", 2],
     ],
     [
         [road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2],
@@ -42,7 +56,7 @@ const trafficSituations = [
     ],
 ]
 
-let traffic = [...trafficSituations[1]].map(trafficVehicle => new Car(...trafficVehicle));
+let traffic = [...trafficSituations[selectedTrafficSituation]].map(trafficVehicle => new Car(...trafficVehicle));
 
 animate();
 
@@ -65,6 +79,15 @@ function generateCars(N) {
         cars.push(new Car(road.getLaneCenter(1), 100, 30, 50, "AI"));
     }
     return cars;
+}
+
+function handleRadioClick(myRadio) {
+    N = myRadio.value === "AI" ? 1000 : 1;
+    currentControl = myRadio.value;
+}
+
+function handleSenarioChange(e) {
+    selectedTrafficSituation = Number(e.value);
 }
 
 function animate(time) {
@@ -95,11 +118,14 @@ function animate(time) {
 
     networkCtx.lineDashOffset = -time / 50;
     Visualizer.drawNetwork(networkCtx, bestCar.brain);
-    
-    if (restartCanvas === true) {traffic = [...trafficSituations[1]].map(trafficVehicle => new Car(...trafficVehicle));
+
+    if (restartCanvas === true) {
+        cars = generateCars(N);
+        traffic = [...trafficSituations[selectedTrafficSituation]].map(trafficVehicle => new Car(...trafficVehicle));
         traffic.forEach(car => car.reset(car.x, car.y, car.width, car.height, "DUMMY", 2))
-        cars.forEach(car => car.reset(road.getLaneCenter(1), 100, 30, 50, "AI"));
+        cars.forEach(car => car.reset(road.getLaneCenter(1), 100, 30, 50, currentControl));
         restartCanvas = false;
+        checkSavedBrain(cars);
     }
     requestAnimationFrame(animate);
 }

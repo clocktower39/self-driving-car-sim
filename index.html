@@ -10,23 +10,24 @@
   <body>
     <canvas id="carCanvas"></canvas>
     <div id="verticalButtons">
-      <!-- <div>
-        <input type="radio" name="carControlType" value="AI" checked/>
-        <label>AI</label>
-      </div>
-      <div>
-        <input type="radio" name="carControlType" value="KEYS" />
-        <label>Manual</label>
-      </div> -->
-      <!-- <select onclick="">
-        <option value="1000">1000</option>
-        <option value="100">100</option>
-        <option value="10">10</option>
-        <option value="1">1</option>
-      </select> -->
       <button onclick="save()">Save Current Best Car</button>
       <button onclick="discardBestCar()">Discard Best Car</button>
       <button onclick="restart()">Restart</button>
+      <br />
+      <select onchange="handleSenarioChange(this)">
+        <option value="0" selected>Senario 1</option>
+        <option value="1">Senario 2</option>
+        <option value="2">Senario 3</option>
+        <option value="3">Senario 4</option>
+      </select>
+      <div>
+        <input type="radio" name="carControlType" value="AI" checked onclick="handleRadioClick(this)" />
+        <label>AI</label>
+      </div>
+      <div>
+        <input type="radio" name="carControlType" value="KEYS" onclick="handleRadioClick(this)" />
+        <label>Manual</label>
+      </div>
     </div>
     <canvas id="networkCanvas"></canvas>
     <script src="visualizer.js"></script>

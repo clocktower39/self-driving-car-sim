@@ -46,3 +46,15 @@ function getRGBA(value) {
     const B = value > 0 ? 0 : 255;
     return `rgba(${R},${G},${B},${alpha})`;
 }
+
+function checkSavedBrain(cars) {
+    if (localStorage.getItem("bestBrain")) {
+        for (let i = 0; i < cars.length; i++) {
+            cars[i].brain = JSON.parse(
+                localStorage.getItem("bestBrain"));
+            if (i != 0) {
+                NeuralNetwork.mutate(cars[i].brain, Math.random() / 3);
+            }
+        }
+    }
+}
